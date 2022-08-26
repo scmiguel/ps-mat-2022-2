@@ -1,9 +1,10 @@
 const express = require('express')
-const { route } = require('.')
-const controller = require('../controllers/alunos')
 const router = express.Router()
-const conttroller = require('../controllers/alunos')
+const controller = require('../controllers/aluno')
 
-router.get('/',controller.retrieve)
+router.post('/', controller.create)
+router.get('/', controller.retrieve)
+router.get('/:id', controller.retrieveOne)
+router.put('/', controller.update)
 
-module.exports = route
+module.exports = router
