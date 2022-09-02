@@ -5,6 +5,7 @@ const controller = require('../controllers/aluno')
 router.post('/', controller.create)
 router.get('/', controller.retrieve)
 router.get('/:id', controller.retrieveOne)
-router.put('/', controller.update)
+router.patch('/:id', controller.update)
+router.delete('/:id', controller.delete)
 
 module.exports = router

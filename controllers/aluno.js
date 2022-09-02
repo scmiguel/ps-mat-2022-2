@@ -51,13 +51,31 @@ controller.retrieveOne = async(req,res) => {
 controller.update = async(req,res) => {
     try{
         const response = await Aluno.update(req.body,
-            {where: {id: req.body.id}})
+            {where: {id: req.params.id}})
             if(response[0]>0){
                 res.status(204).end()
             }
             else{
                 res.status(404).end()
             }
+    }
+    catch(error) {
+        console.error(error)
+        // HTTP 500: Internal Server Error
+        res.status(500).send(error)
+    }
+}
+controller.delete = async(req,res) => {
+    try{
+        const response = await Aluno.destroy(
+            {where: {id: req.params.id}}
+        )
+        if(response){
+            res.status(204).end()
+        }
+        else{
+            res.status(404).end()
+        }
     }
     catch(error) {
         console.error(error)
