@@ -28,4 +28,7 @@ app.use('/aluno', aluno)
 const professor = require('./routes/professor')
 app.use('/professor', professor)
 
+const usuario = require('./routes/usuario')
+app.use('/usuario',usuario)
+
 module.exports = app;
