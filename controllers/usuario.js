@@ -6,6 +6,14 @@ const controller = {}
 
 controller.create = async(req,res) => {
     try{
+        if(! req.body.senha) return res.status(500).send({
+            mensagem: 'Campo "senha" deve ser informado'
+        })
+
+        req.body.hash_senha = await bcrypt.hash(req.body.senha, 12)
+
+        delete req.body.senha
+
         await Usuario.create(req.body)
         // HTTP 201: Created
         res.status(201).end()
@@ -19,7 +27,7 @@ controller.create = async(req,res) => {
 
 controller.retrieve = async (req, res) => {
     try {
-        const result = await Usuario.findAll()
+        const result = await Usuario.scope('semsenha').findAll()
         // HTTP 200: OK (implícito)
         res.send(result)
     }
@@ -32,7 +40,7 @@ controller.retrieve = async (req, res) => {
 
 controller.retrieveOne = async(req,res) => {
     try{
-        const result = await Usuario.findByPk(req.params.id)
+        const result = await Usuario.scope('semsenha').findByPk(req.params.id)
 
         if(result){
             res.send(result)
@@ -52,6 +60,12 @@ controller.retrieveOne = async(req,res) => {
 
 controller.update = async(req,res) => {
     try{
+
+        if(req.body.senha){
+            req.body.hash_senha = bcrypt.hash(req.body.senha, 12)
+            delete req.body.senha
+        }
+
         const response = await Usuario.update(req.body,
             {where: {id: req.params.id}})
             if(response[0]>0){
@@ -98,7 +112,10 @@ controller.login = async(req,res) => {
             let senhaOk = await bcrypt.compare(req.body.senha, usuario.hash_senha)
 
             if(senhaOk){
-                const token=jwt.sign({id: usuario.id}, process.env.TOKEN_SECRET, {expiresIn: '8h'})
+                const token=jwt.sign(
+                    {id: usuario.id,email: usuario.email,admin: usuario.admin,data_nasc: usuario.data_nasc},
+                     process.env.TOKEN_SECRET,
+                      {expiresIn: '8h'})
                 res.json({auth: true, token})
             }
             else{//senha invalida
