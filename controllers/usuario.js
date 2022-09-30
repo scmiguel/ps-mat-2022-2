@@ -14,6 +14,8 @@ controller.create = async(req,res) => {
 
         delete req.body.senha
 
+        if(! req.infologado?.admin) req.body.admin=false
+
         await Usuario.create(req.body)
         // HTTP 201: Created
         res.status(201).end()
@@ -27,8 +29,16 @@ controller.create = async(req,res) => {
 
 controller.retrieve = async (req, res) => {
     try {
-        const result = await Usuario.scope('semsenha').findAll()
-        // HTTP 200: OK (implícito)
+        let result
+        if(req.infologado.admin){
+            const result = await Usuario.scope('semsenha').findAll()
+        }// HTTP 200: OK (implícito)
+        else{
+            result= await Usuario.scope('semsenha').findAll({
+                where: {id:req.infologado.id}
+            })
+        }
+        
         res.send(result)
     }
     catch(error) {
@@ -40,6 +50,10 @@ controller.retrieve = async (req, res) => {
 
 controller.retrieveOne = async(req,res) => {
     try{
+        if(!(req.infologado.admin) && req.infologado.id != req.params.id){
+            return res.sendStaus(403).end()
+        }
+
         const result = await Usuario.scope('semsenha').findByPk(req.params.id)
 
         if(result){
@@ -60,6 +74,9 @@ controller.retrieveOne = async(req,res) => {
 
 controller.update = async(req,res) => {
     try{
+        if(!(req.infologado.admin) && req.infologado.id != req.params.id){
+            return res.sendStaus(403).end()
+        }
 
         if(req.body.senha){
             req.body.hash_senha = bcrypt.hash(req.body.senha, 12)
@@ -81,8 +98,13 @@ controller.update = async(req,res) => {
         res.status(500).send(error)
     }
 }
+
 controller.delete = async(req,res) => {
     try{
+        if(!(req.infologado.admin) && req.infologado.id != req.params.id){
+            return res.sendStaus(403).end()
+        }
+
         const response = await Usuario.destroy(
             {where: {id: req.params.id}}
         )
