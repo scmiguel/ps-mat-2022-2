@@ -34,4 +34,7 @@ app.use('/usuario',usuario)
 const curso = require('./routes/curso')
 app.use('/curso',curso)
 
+const turma = require('./routes/turma')
+app.use('/turma',turma)
+
 module.exports = app;

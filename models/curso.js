@@ -44,6 +44,13 @@ updatedAt: {
     tableName: 'cursos',
 });
 
+model.associations = models =>{
+  model.hasMany(models.Turma, {
+    foreignKey: 'turma_id',
+    sourceKey: 'id'
+  })
+}
+
 // Cria a tabela no banco de dados, caso ainda não exista
 model.sync()
 
