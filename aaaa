@@ -1,2 +1,0 @@
-id:integer,nome:string,email:string,hash_senha:string,admin:boolean
-npx sequelize-cli model:generate --name Turma --attributes id:integer,curno_id:integer,professor_id:integer,dia_semana:tinyint,horario_ini:time,horario_fim:time,data_ini:dateonly,data_fim:dateonly

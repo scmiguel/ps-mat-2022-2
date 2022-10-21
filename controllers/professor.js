@@ -1,18 +1,35 @@
-const Professor = require('../models/professor')
+const Professor = require('../models/professor');
 
 const controller = {}
 
-controller.create = async(req,res) => {
+
+controller.create = async(req, res) => {
     try{
         await Professor.create(req.body)
-        // HTTP 201: Created
-        res.status(201).end()
+        //HTTP 201: Created
+        res.status(201).end();
     }
     catch(error) {
         console.error(error)
         // HTTP 500: Internal Server Error
         res.status(500).send(error)
     }
+}
+
+controller.retriveOne = async (req, res) => {
+
+    try {
+        const result = await Professor.findByPk(req.params.id);
+        // HTTP 200: OK (implícito)
+        !result && res.status(404).end;
+        res.send(result)
+
+    } catch(error) {
+        console.error(error)
+        // HTTP 500: Internal Server Error
+        res.status(500).send(error)
+    }
+
 }
 
 controller.retrieve = async (req, res) => {
@@ -28,56 +45,44 @@ controller.retrieve = async (req, res) => {
     }
 }
 
-controller.retrieveOne = async(req,res) => {
-    try{
-        const result = await Professor.findByPk(req.params.id)
+controller.update = async (req, res) =>{
 
-        if(result){
-            res.send(result)
-        }
-        else{
-            res.status(404).end()
-        }
-
-        res.result(result)
-    }
-    catch(error) {
-        console.error(error)
-        // HTTP 500: Internal Server Error
-        res.status(500).send(error)
-    }
-}
-
-controller.update = async(req,res) => {
-    try{
-        const response = await Professor.update(req.body,
-            {where: {id: req.params.id}})
-            if(response[0]>0){
-                res.status(204).end()
-            }
-            else{
-                res.status(404).end()
-            }
-    }
-    catch(error) {
-        console.error(error)
-        // HTTP 500: Internal Server Error
-        res.status(500).send(error)
-    }
-}
-controller.delete = async(req,res) => {
-    try{
-        const response = await Professor.destroy(
-            {where: {id: req.params.id}}
+    try {
+        const response = await Professor.update(
+            req.body,
+            {where : {id: req.params.id}}
         )
-        if(response){
+
+        if(response[0] > 0){
             res.status(204).end()
-        }
-        else{
+        }else{
             res.status(404).end()
         }
     }
     catch(error) {
+        console.error(error)
+        // HTTP 500: Internal Server Error
+        res.status(500).send(error)
+    }
+}
+
+controller.delete = async (req, res) =>{
+    try {
+        
+        const response = await Professor.destroy(
+            {
+                where: {id : req.params.id}
+            }
+        )
+
+        if(response){
+             // HTTP 204: OK (implícito)
+            res.status(204).end()
+        }else{
+            res.status(404).end()
+        }
+
+    } catch(error) {
         console.error(error)
         // HTTP 500: Internal Server Error
         res.status(500).send(error)

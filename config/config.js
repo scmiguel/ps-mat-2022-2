@@ -1,8 +1,13 @@
 require('dotenv').config()
 
-const{APP_DB_HOST, APP_DB_NAME, APP_DB_USER, APP_DB_PASS}=process.env
+const { 
+  APP_DB_HOST, 
+  APP_DB_NAME, 
+  APP_DB_USER, 
+  APP_DB_PASS 
+} = process.env
 
-module.exports={
+module.exports = {
   "development": {
     "username": APP_DB_USER,
     "password": APP_DB_PASS,
