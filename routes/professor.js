@@ -1,4 +1,5 @@
 const express = require('express');
+const verifToken = require('../lib/verif_token')
 
 const router = express.Router()
 const controller = require('../controllers/professor')
