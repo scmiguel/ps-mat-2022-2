@@ -4,7 +4,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-const Usuario = require('../models/usuario')
+const {Usuario} = require('../models/usuario')
 
 const controller = {}       // Objeto vazio
 
