@@ -185,7 +185,7 @@ controller.delete = async (req, res) => {
 
 controller.login = async (req, res) => {
     try {
-        const usuario = await Usuario.retriveOne({ where: { email: req.body.email }})
+        const usuario = await Usuario.findOne({ where: { email: req.body.email }})
 
         if(!usuario) {     // Usuário não existe
             // HTTP 401: Unauthorized
