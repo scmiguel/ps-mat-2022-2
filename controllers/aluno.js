@@ -1,4 +1,4 @@
-const Aluno = require('../models/aluno')
+const { Aluno, Turma } = require('../models')
 
 const controller = {}       // Objeto vazio
 
@@ -27,7 +27,7 @@ controller.create = async(req, res) => {
 controller.retrieve = async (req, res) => {
     try {
         const result = await Aluno.findAll({
-            include: {model: Turma, as: 'turma'}
+            include: { model: Turma, as: 'turma' }
         })
         // HTTP 200: OK (implícito)
         res.send(result)
@@ -60,14 +60,11 @@ controller.retrieveOne = async (req, res) => {
 }
 
 controller.update = async (req, res) => {
-    //console.log('==============>', req.params.id)
     try {
         const response = await Aluno.update(
             req.body, 
             { where: { id: req.params.id } }
         )
-
-        // console.log("======>", {response})
 
         if(response[0] > 0) {  // Encontrou e atualizou
             // HTTP 204: No content
@@ -89,8 +86,6 @@ controller.delete = async (req, res) => {
         const response = await Aluno.destroy(
             { where: { id: req.params.id } }
         )
-
-        // console.log("======>", {response})
 
         if(response) {  // Encontrou e atualizou
             // HTTP 204: No content
