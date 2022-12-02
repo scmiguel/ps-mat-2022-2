@@ -184,6 +184,7 @@ controller.delete = async (req, res) => {
 }
 
 controller.login = async (req, res) => {
+    
     try {
         const usuario = await Usuario.findOne({ where: { email: req.body.email }})
 
@@ -195,7 +196,6 @@ controller.login = async (req, res) => {
             let senhaOk = await bcrypt.compare(req.body.senha, usuario.hash_senha)
 
             if(senhaOk) {
-                console.log({usuario})
                 // Gera e retorna o token
                 const token = jwt.sign(
                     {
@@ -208,8 +208,12 @@ controller.login = async (req, res) => {
                     process.env.TOKEN_SECRET,
                     { expiresIn: '8h' } 
                 )
-                // HTTP 200: OK (implícito)
-                res.json({ auth: true, token })
+                // Token sendo retornado no corpo da resposta
+                //res.json({ auth: true, token })
+
+                // Token retornando em um cookie seguro (HTTP only)
+                res.setHeader('Set-Cookie', 
+                    `app-data=${token}; Domain=agoravai-miguel.onrender.com; SameSite=None; Secure; Path=/; HttpOnly`).status(200).json({auth: true})
             }
             else {  // Senha inválida
                 // HTTP 401: Unauthorized
@@ -222,6 +226,10 @@ controller.login = async (req, res) => {
         // HTTP 500: Internal Server Error
         res.status(500).send(error)
     }
+}
+
+controller.logout = (req, res) => {
+    res.clearCookie('app-data').status(200).json({auth: false})
 }
 
 module.exports = controller
