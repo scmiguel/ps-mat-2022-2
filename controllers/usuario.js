@@ -1,10 +1,7 @@
-// professor@faustocintra.com.br, abc123
-// estag@empresa.com.br, Deu$
-
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-const {Usuario} = require('../models')
+const { Usuario } = require('../models')
 
 const controller = {}       // Objeto vazio
 
@@ -86,10 +83,6 @@ controller.retrieve = async (req, res) => {
 controller.retrieveOne = async (req, res) => {
     try {
 
-        console.log('req.infoLogado.admin:', req.infoLogado.admin)
-        console.log('req.infoLogado.id:', req.infoLogado.id, typeof req.infoLogado.id)
-        console.log('req.params.id:', req.params.id, typeof req.params.id)
-
         // Usuário não-admins só podem ter acesso ao próprio registro
         if(! (req.infoLogado.admin) && req.infoLogado.id != req.params.id) {
             // HTTP 403: Forbidden
@@ -136,8 +129,6 @@ controller.update = async (req, res) => {
             { where: { id: req.params.id } }
         )
 
-        // console.log("======>", {response})
-
         if(response[0] > 0) {  // Encontrou e atualizou
             // HTTP 204: No content
             res.status(204).end()
@@ -165,8 +156,6 @@ controller.delete = async (req, res) => {
         const response = await Usuario.destroy(
             { where: { id: req.params.id } }
         )
-
-        // console.log("======>", {response})
 
         if(response) {  // Encontrou e atualizou
             // HTTP 204: No content
@@ -213,7 +202,7 @@ controller.login = async (req, res) => {
 
                 // Token retornando em um cookie seguro (HTTP only)
                 res.setHeader('Set-Cookie', 
-                    `app-data=${token}; Domain=agoravai-miguel.onrender.com; SameSite=None; Secure; Path=/; HttpOnly`).status(200).json({auth: true})
+                    `app-data=${token}; Domain=https://agoravai-miguel.onrender.com; SameSite=None; Secure; Path=/; HttpOnly`).status(200).json({auth: true})
             }
             else {  // Senha inválida
                 // HTTP 401: Unauthorized
